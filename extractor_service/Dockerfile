@@ -57,7 +57,8 @@ COPY . .
 
 EXPOSE ${PERFECTFRAMEAI_PORT}
 
-# Health check to ensure service is running
+# Health check to ensure service is running and responding
+# Uses FastAPI /v2/status endpoint which returns active extractor status
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD curl -f http://localhost:${PERFECTFRAMEAI_PORT}/v2/status || exit 1
 

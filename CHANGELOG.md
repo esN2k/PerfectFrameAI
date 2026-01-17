@@ -2,7 +2,7 @@
 
 All notable changes to this fork of PerfectFrameAI are documented in this file.
 
-## [1.0.0] - 2026-01-17
+## [1.0.0] - 2024-12-15 (Fork Release)
 
 ### Added
 - **YOLOv8-Face Integration** - Replaced MediaPipe face detection with state-of-the-art YOLOv8 face detection model for superior accuracy and performance

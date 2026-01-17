@@ -50,15 +50,16 @@ ENV PERFECTFRAMEAI_BATCH_SIZE=64
 ENV PERFECTFRAMEAI_PREFETCH_BATCHES=1
 ENV PERFECTFRAMEAI_LOG_PERF=1
 ENV PERFECTFRAMEAI_LOG_GPU=1
+ENV PERFECTFRAMEAI_PORT=8100
 
 # Copy application code
 COPY . .
 
-EXPOSE 8100
+EXPOSE ${PERFECTFRAMEAI_PORT}
 
 # Health check to ensure service is running
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD curl -f http://localhost:8100/v2/status || exit 1
+  CMD curl -f http://localhost:${PERFECTFRAMEAI_PORT}/v2/status || exit 1
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8100"]
+CMD uvicorn main:app --host 0.0.0.0 --port ${PERFECTFRAMEAI_PORT}
 

@@ -1,8 +1,11 @@
 FROM tensorflow/tensorflow:latest-gpu
 
-LABEL authors="BKDDFS"
+LABEL authors="BKDDFS, esN2k"
+LABEL description="PerfectFrameAI Enhanced - AI-powered frame extraction with person detection"
+LABEL version="1.0.0"
 
-RUN apt-get update && apt-get install -y \
+# Install system dependencies in a single layer
+RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip python3-dev python-is-python3 \
     ffmpeg \
     build-essential \
@@ -17,13 +20,16 @@ RUN apt-get update && apt-get install -y \
     libavfilter-dev \
     libgl1 \
     libglib2.0-0 \
-    pkg-config && \
-    rm -rf /var/lib/apt/lists/*
+    pkg-config \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 VOLUME /root/.cache/huggingface
 
 WORKDIR /app
 
+# Copy and install Python dependencies first (better layer caching)
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir torch==2.3.1 torchvision==0.18.1 \
@@ -31,6 +37,7 @@ RUN pip install --no-cache-dir torch==2.3.1 torchvision==0.18.1 \
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Set environment variables
 ENV NVIDIA_VISIBLE_DEVICES=all
 ENV NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
 ENV CUDA_HOME=/usr/local/cuda
@@ -44,8 +51,14 @@ ENV PERFECTFRAMEAI_PREFETCH_BATCHES=1
 ENV PERFECTFRAMEAI_LOG_PERF=1
 ENV PERFECTFRAMEAI_LOG_GPU=1
 
+# Copy application code
 COPY . .
 
 EXPOSE 8100
 
+# Health check to ensure service is running
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:8100/ || exit 1
+
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8100"]
+

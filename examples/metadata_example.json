@@ -57,7 +57,7 @@
     "model_version": "1.0.0",
     "yolo_model": "yolov8n-face.pt",
     "nima_model": "inception_resnet_v2",
-    "processed_at": "2026-01-17T14:26:18Z"
+    "processed_at": "2024-01-15T10:30:45Z"
   },
   
   "notes": [

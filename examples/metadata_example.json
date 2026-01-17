@@ -1,0 +1,69 @@
+{
+  "description": "Example metadata output from PerfectFrameAI Enhanced with person detection enabled",
+  "frame_id": "video_001_frame_0042",
+  "video_source": "family_vacation.mp4",
+  "timestamp": 42.5,
+  "timestamp_formatted": "00:00:42",
+  
+  "scoring": {
+    "aesthetic_score": 8.3,
+    "face_quality_score": 7.9,
+    "blur_score": 145.2,
+    "composite_score": 8.1,
+    "scoring_weights": {
+      "aesthetic": 0.5,
+      "face_quality": 0.35,
+      "sharpness": 0.15
+    }
+  },
+  
+  "face_detection": {
+    "faces_detected": 1,
+    "face_bounding_boxes": [
+      {
+        "x1": 120,
+        "y1": 64,
+        "x2": 300,
+        "y2": 244,
+        "confidence": 0.94,
+        "area_ratio": 0.075
+      }
+    ],
+    "largest_face_area_ratio": 0.075,
+    "average_face_confidence": 0.94
+  },
+  
+  "pose_analysis": {
+    "pose_category": "portrait",
+    "pose_confidence": "high",
+    "face_orientation": "frontal"
+  },
+  
+  "quality_metrics": {
+    "is_blurry": false,
+    "blur_score": 145.2,
+    "blur_threshold": 120.0,
+    "sharpness_rating": "excellent"
+  },
+  
+  "frame_metadata": {
+    "frame_number": 42,
+    "frame_width": 1920,
+    "frame_height": 1080,
+    "fps": 30
+  },
+  
+  "processing_info": {
+    "model_version": "1.0.0",
+    "yolo_model": "yolov8n-face.pt",
+    "nima_model": "inception_resnet_v2",
+    "processed_at": "2024-01-15T10:30:45Z"
+  },
+  
+  "notes": [
+    "High-quality portrait shot with clear facial features",
+    "Well-lit scene with good exposure",
+    "Sharp focus on subject",
+    "Meets all quality thresholds for person mode"
+  ]
+}

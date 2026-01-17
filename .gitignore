@@ -14,3 +14,62 @@ tests/test_files/best_frames/*
 tests/test_files/top_images/*
 !tests/test_files/best_frames/.gitkeep
 !tests/test_files/top_images/.gitkeep
+
+# Build artifacts
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test output
+.tox/
+.coverage.*
+coverage.xml
+*.cover
+
+# Docker
+*.tar
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Sample output directory (keep README only)
+examples/sample_output/*
+!examples/sample_output/.gitkeep
+
+# Input/output test directories
+input_cansu/*
+output_cansu/*
+output_cansu_yolo_require/*
+input_directory/*
+output_directory/*
+!input_directory/.gitkeep
+!output_directory/.gitkeep
+

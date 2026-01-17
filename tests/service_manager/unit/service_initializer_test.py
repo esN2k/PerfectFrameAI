@@ -14,6 +14,12 @@ from service_manager import service_initializer
 from service_manager.service_initializer import ServiceInitializer
 
 ALL_FRAMES = False
+PERSON_MODE = False
+REQUIRE_FACES = False
+MIN_FACE_AREA = 0.05
+BLUR_THRESHOLD = 100.0
+POSE_FILTER = None
+TOP_N = 0
 
 
 @pytest.fixture
@@ -24,7 +30,13 @@ def service(config):
         input_dir=config.input_directory,
         output_dir=config.output_directory,
         port=config.port,
-        all_frames=ALL_FRAMES
+        all_frames=ALL_FRAMES,
+        person_mode=PERSON_MODE,
+        require_faces=REQUIRE_FACES,
+        min_face_area=MIN_FACE_AREA,
+        blur_threshold=BLUR_THRESHOLD,
+        pose_filter=POSE_FILTER,
+        top_n=TOP_N
     )
     with patch.object(ServiceInitializer, "_check_directory"):
         initializer = ServiceInitializer(user_input)
@@ -45,7 +57,13 @@ def test_start_various_args(mock_check_directory, arg_set):
         input_dir=arg_set["input"],
         output_dir=arg_set["output"],
         port=arg_set["port"],
-        all_frames=ALL_FRAMES
+        all_frames=ALL_FRAMES,
+        person_mode=PERSON_MODE,
+        require_faces=REQUIRE_FACES,
+        min_face_area=MIN_FACE_AREA,
+        blur_threshold=BLUR_THRESHOLD,
+        pose_filter=POSE_FILTER,
+        top_n=TOP_N
     )
     mock_check_directory.side_effect = lambda x: x
 
@@ -56,6 +74,12 @@ def test_start_various_args(mock_check_directory, arg_set):
     assert service._output_directory == arg_set["output"]
     assert service._port == arg_set["port"]
     assert service._all_frames == ALL_FRAMES
+    assert service._person_mode == PERSON_MODE
+    assert service._require_faces == REQUIRE_FACES
+    assert service._min_face_area == MIN_FACE_AREA
+    assert service._blur_threshold == BLUR_THRESHOLD
+    assert service._pose_filter == []
+    assert service._top_n == TOP_N
     mock_check_directory.assert_any_call(arg_set["input"])
     mock_check_directory.assert_any_call(arg_set["output"])
 
@@ -89,6 +113,7 @@ def test_run_extractor_post_request(mock_time, service):
     assert request_obj.full_url == test_url
     request_data = json.loads(request_obj.data.decode('utf-8'))
     assert request_data['all_frames'] is False
+    assert request_data['top_n'] == TOP_N
 
 
 @pytest.fixture

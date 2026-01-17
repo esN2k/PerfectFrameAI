@@ -1,0 +1,12 @@
+person_detection:
+  enabled: true
+  require_faces: false
+  min_face_area: 0.05
+  min_face_confidence: 0.7
+  blur_threshold: 100
+  pose_filter: []
+
+scoring_weights:
+  aesthetic: 0.5
+  face_quality: 0.35
+  sharpness: 0.15

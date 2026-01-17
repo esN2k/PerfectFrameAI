@@ -103,6 +103,20 @@
             <p>Output: Frames saved as <code>.jpg</code>.</p>
         </ol>
     </details>
+    <br>
+    <details>
+        <summary>
+            <strong>Person-Aware Scoring 👤</strong>
+            <blockquote>Optional face detection, blur scoring, and pose categorization.</blockquote>
+        </summary>
+        <ol>
+            <li>Detects faces in each frame using MediaPipe.</li>
+            <li>Calculates blur score (Laplacian variance) and face quality.</li>
+            <li>Combines NIMA, face quality, and sharpness into a composite score.</li>
+            <li>Supports optional pose filtering and face requirements.</li>
+            <p>Output: Images saved as <code>.jpg</code> with JSON metadata sidecars.</p>
+        </ol>
+    </details>
 </div>
 <div id="installation">
     <h2>💿 Installation</h2>
@@ -215,6 +229,41 @@
                     <td>False</td>
                 </tr>
                 <tr>
+                    <td>--person-mode</td>
+                    <td></td>
+                    <td>Enable person detection scoring.</td>
+                    <td>bool</td>
+                    <td>False</td>
+                </tr>
+                <tr>
+                    <td>--require-faces</td>
+                    <td></td>
+                    <td>Only keep frames with detected faces.</td>
+                    <td>bool</td>
+                    <td>False</td>
+                </tr>
+                <tr>
+                    <td>--min-face-area</td>
+                    <td></td>
+                    <td>Minimum face area ratio.</td>
+                    <td>float</td>
+                    <td>0.05</td>
+                </tr>
+                <tr>
+                    <td>--blur-threshold</td>
+                    <td></td>
+                    <td>Minimum sharpness score.</td>
+                    <td>float</td>
+                    <td>100</td>
+                </tr>
+                <tr>
+                    <td>--pose-filter</td>
+                    <td></td>
+                    <td>Filter by pose type: portrait,profile,full-body.</td>
+                    <td>str</td>
+                    <td>None</td>
+                </tr>
+                <tr>
                     <td>--cpu</td>
                     <td></td>
                     <td>
@@ -227,6 +276,42 @@
         </table>
         <p><strong>Example (Best Frames Extraction):</strong></p> 
         <img src="static/start_example.png">
+        <p><strong>Example (Person Mode with pose filtering):</strong></p>
+        <code>python start.py best_frames_extractor --person-mode --require-faces --pose-filter portrait,profile</code>
+        <p>When person mode is enabled, JSON metadata sidecars are written next to output images.</p>
+        <p>Note: <code>--all_frames</code> bypasses scoring and person detection.</p>
+        <details>
+            <summary><strong>Person Detection Config (config.yaml)</strong></summary>
+            <p>Use this as a reference for API payloads or external configuration tooling.</p>
+            <pre><code>person_detection:
+  enabled: true
+  require_faces: false
+  min_face_area: 0.05
+  min_face_confidence: 0.7
+  blur_threshold: 100
+  pose_filter: []
+
+scoring_weights:
+  aesthetic: 0.5
+  face_quality: 0.35
+  sharpness: 0.15
+</code></pre>
+        </details>
+        <details>
+            <summary><strong>Example Metadata Output</strong></summary>
+            <pre><code>{
+  "frame_id": "frame_0042",
+  "timestamp": 12.5,
+  "aesthetic_score": 8.3,
+  "face_quality_score": 7.9,
+  "blur_score": 145.2,
+  "composite_score": 8.1,
+  "faces_detected": 1,
+  "face_bounding_boxes": [[120, 64, 180, 180]],
+  "pose_category": "portrait",
+  "is_blurry": false
+}</code></pre>
+        </details>
         <p>You can edit other default parameters in <code>config.py</code>.</p>
     </details>
     <details id="method2">
@@ -535,7 +620,9 @@
     Original Google Brains publication introducing NIMA:<br>
     <a href="https://research.google/blog/introducing-nima-neural-image-assessment/">https://research.google/blog/introducing-nima-neural-image-assessment/</a><br>
     Pre-trained weights:<br>
-    <a href="https://github.com/titu1994/neural-image-assessment">https://github.com/titu1994/neural-image-assessment</a>
+    <a href="https://github.com/titu1994/neural-image-assessment">https://github.com/titu1994/neural-image-assessment</a><br>
+    Person detection and pose logic inspiration:<br>
+    <a href="https://github.com/codeprimate/personfromvid">https://github.com/codeprimate/personfromvid</a>
 </div>
 <div id="licence">
     <h2>📜 License</h2>

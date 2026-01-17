@@ -19,11 +19,15 @@ def test_config_default():
     assert isinstance(config.compering_group_size, int)
     assert isinstance(config.batch_size, int)
     assert isinstance(config.top_images_percent, float)
+    assert config.top_n == 0
     assert config.images_output_format == ".jpg"
     assert config.weights_directory == Path.home() / ".cache" / "huggingface"
     assert config.weights_filename == "weights.h5"
     assert config.weights_repo_url == "https://huggingface.co/BKDDFS/nima_weights/resolve/main/"
     assert config.all_frames == False
+    assert config.person_detection.enabled is False
+    assert config.person_detection.min_face_area == 0.05
+    assert config.scoring_weights.aesthetic == 0.5
 
 
 def test_request_data_validation_failure_output():

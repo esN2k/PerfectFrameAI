@@ -20,15 +20,69 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 import logging
+import os
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Generator
 
 import cv2
 import numpy as np
 
+from .perf import profile_time
+
 logger = logging.getLogger(__name__)
+
+_OPENCV_CONFIGURED = False
+
+
+def _video_details(*args, **kwargs) -> str | None:
+    video_path = None
+    if len(args) > 1:
+        video_path = args[1]
+    if video_path is None:
+        video_path = kwargs.get("video_path")
+    if video_path is None:
+        return None
+    try:
+        return f"video={Path(video_path).name}"
+    except Exception:
+        return None
+
+
+def _get_opencv_threads() -> int:
+    override = os.getenv("PERFECTFRAMEAI_OPENCV_THREADS")
+    if override:
+        try:
+            return max(1, int(override))
+        except ValueError:
+            logger.warning("Invalid PERFECTFRAMEAI_OPENCV_THREADS value: %s", override)
+    cpu_count = os.cpu_count() or 4
+    return min(12, max(1, cpu_count - 2))
+
+
+def _configure_opencv_runtime() -> None:
+    """Configure OpenCV threading for predictable CPU usage."""
+    global _OPENCV_CONFIGURED
+    if _OPENCV_CONFIGURED or os.getenv("PERFECTFRAMEAI_DISABLE_OPENCV_CONFIG"):
+        return
+    _OPENCV_CONFIGURED = True
+    try:
+        threads = _get_opencv_threads()
+        cv2.setNumThreads(threads)
+        cv2.setUseOptimized(True)
+        logger.info("OpenCV threads set to %d.", threads)
+    except Exception as exc:  # pragma: no cover - defensive path
+        logger.warning("OpenCV runtime configuration failed: %s", exc)
+
+
+@dataclass(frozen=True)
+class VideoFrame:
+    """Video frame metadata container."""
+    image: np.ndarray
+    frame_index: int
+    timestamp: float
 
 
 class VideoProcessor(ABC):
@@ -49,6 +103,26 @@ class VideoProcessor(ABC):
 
         Yields:
             list[np.ndarray]: A batch of video frames.
+        """
+
+    @classmethod
+    @abstractmethod
+    def get_next_frames_with_metadata(
+            cls, video_path: Path,
+            batch_size: int
+    ) -> Generator[list[VideoFrame], None, None]:
+        """
+        Abstract generator method to generate batches of frames with metadata.
+
+        Args:
+            video_path (Path): Path for video from which frames will be read.
+            batch_size (int): Number of frames to include in each batch.
+
+        Returns:
+             Generator: Generator yielding batches of VideoFrame objects.
+
+        Yields:
+            list[VideoFrame]: A batch of video frames with metadata.
         """
 
 
@@ -87,6 +161,7 @@ class OpenCVVideo(VideoProcessor):
             video_cap.release()
 
     @classmethod
+    @profile_time("extract_frames", details_fn=_video_details)
     def get_next_frames(cls, video_path: Path,
                         batch_size: int) -> Generator[list[np.ndarray], None, None]:
         """
@@ -102,6 +177,7 @@ class OpenCVVideo(VideoProcessor):
         Yields:
             list[np.ndarray]: A batch of video frames.
         """
+        _configure_opencv_runtime()
         with cls._video_capture(video_path) as video:
             frame_rate = cls._get_video_attribute(
                 video, cv2.CAP_PROP_FPS, "frame rate")
@@ -112,6 +188,50 @@ class OpenCVVideo(VideoProcessor):
             for frame_index in range(0, total_frames, frame_rate):
                 frame = cls._read_next_frame(video, frame_index)
                 frames_batch.append(frame)
+                logger.debug("Frame appended to frames batch.")
+                if len(frames_batch) == batch_size:
+                    logger.info("Got full frames batch.")
+                    yield frames_batch
+                    frames_batch = []
+            if frames_batch:
+                logger.info("Returning last frames batch.")
+                yield frames_batch
+
+    @classmethod
+    @profile_time("extract_frames", details_fn=_video_details)
+    def get_next_frames_with_metadata(
+            cls, video_path: Path,
+            batch_size: int
+    ) -> Generator[list[VideoFrame], None, None]:
+        """
+        Generates batches of frames with metadata from the specified video.
+
+        Args:
+            video_path (Path): Path for video from which frames will be read.
+            batch_size (int): Maximum number of frames per batch.
+
+        Returns:
+            Generator: Generator yielding batches of VideoFrame objects.
+
+        Yields:
+            list[VideoFrame]: A batch of video frames with metadata.
+        """
+        _configure_opencv_runtime()
+        with cls._video_capture(video_path) as video:
+            frame_rate = cls._get_video_attribute(
+                video, cv2.CAP_PROP_FPS, "frame rate")
+            total_frames = cls._get_video_attribute(
+                video, cv2.CAP_PROP_FRAME_COUNT, "total frames")
+            frames_batch: list[VideoFrame] = []
+            logger.info("Getting frames batch with metadata...")
+            for frame_index in range(0, total_frames, frame_rate):
+                frame = cls._read_next_frame(video, frame_index)
+                if frame is None:
+                    continue
+                timestamp = frame_index / float(frame_rate)
+                frames_batch.append(
+                    VideoFrame(image=frame, frame_index=frame_index, timestamp=timestamp)
+                )
                 logger.debug("Frame appended to frames batch.")
                 if len(frames_batch) == batch_size:
                     logger.info("Got full frames batch.")

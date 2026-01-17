@@ -76,6 +76,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--all_frames", action="store_true",
                         help="Returning all frames every second without filtering. "
                              "For best_frames_extractor - does nothing with others.")
+    parser.add_argument("--person-mode", action="store_true",
+                        help="Enable person detection scoring.")
+    parser.add_argument("--require-faces", action="store_true",
+                        help="Only keep frames with detected faces.")
+    parser.add_argument("--min-face-area", type=float, default=0.05,
+                        help="Minimum face area ratio (default: 0.05).")
+    parser.add_argument("--blur-threshold", type=float, default=100.0,
+                        help="Minimum sharpness score (default: 100).")
+    parser.add_argument("--pose-filter", type=str, default=None,
+                        help="Filter by pose type: portrait,profile,full-body.")
+    parser.add_argument("--top-n", type=int, default=0,
+                        help="Limit to top N frames per video (default: 0, disabled).")
     parser.add_argument("--cpu", action="store_true",
                         help="Turn on cpu-only mode.")
     args = parser.parse_args()

@@ -41,6 +41,12 @@ class ServiceInitializer:
         self._extractor_name = user_input.extractor_name
         self._port = user_input.port
         self._all_frames = user_input.all_frames
+        self._person_mode = user_input.person_mode
+        self._require_faces = user_input.require_faces
+        self._min_face_area = user_input.min_face_area
+        self._blur_threshold = user_input.blur_threshold
+        self._pose_filter = self._parse_pose_filter(user_input.pose_filter)
+        self._top_n = getattr(user_input, "top_n", 0)
 
     @staticmethod
     def _check_directory(directory: str) -> Path:
@@ -67,7 +73,17 @@ class ServiceInitializer:
         """Send POST request to local port extractor service to start chosen extractor."""
         if not extractor_url:
             extractor_url = f"http://localhost:{self._port}/v2/extractors/{self._extractor_name}"
-        json_data = {"all_frames": self._all_frames}
+        json_data = {
+            "all_frames": self._all_frames,
+            "top_n": self._top_n,
+            "person_detection": {
+                "enabled": self._person_mode,
+                "require_faces": self._require_faces,
+                "min_face_area": self._min_face_area,
+                "blur_threshold": self._blur_threshold,
+                "pose_filter": self._pose_filter,
+            },
+        }
         req = Request(
             extractor_url, method="POST",
             data=json.dumps(json_data).encode('utf-8'),
@@ -99,11 +115,18 @@ class ServiceInitializer:
                     message = response_body.get("message", "No message returned")
                     logger.info("Response from server: %s", message)
                     return True
-        except RemoteDisconnected:
+        except (RemoteDisconnected, ConnectionResetError, ConnectionRefusedError):
             logger.info("Waiting for service to be available...")
             self.__check_timeout(start_time, timeout)
             time.sleep(3)
         return False
+
+    @staticmethod
+    def _parse_pose_filter(pose_filter: Union[str, None]) -> list[str]:
+        """Parse comma-separated pose filters into a list."""
+        if not pose_filter:
+            return []
+        return [item.strip().lower() for item in pose_filter.split(",") if item.strip()]
 
     @staticmethod
     def __check_timeout(start_time: float, timeout: int) -> None:

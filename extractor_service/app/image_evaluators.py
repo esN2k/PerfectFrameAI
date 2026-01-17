@@ -20,6 +20,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 import logging
+import os
 from abc import ABC, abstractmethod
 from pathlib import Path
 
@@ -30,9 +31,65 @@ from tensorflow import convert_to_tensor
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Dense, Dropout
 
+from .perf import profile_time
 from .schemas import ExtractorConfig
 
 logger = logging.getLogger(__name__)
+
+_TF_RUNTIME_CONFIGURED = False
+
+
+def _nima_details(*args, **kwargs) -> str | None:
+    images = None
+    if len(args) > 1:
+        images = args[1]
+    if images is None:
+        images = kwargs.get("images")
+    if images is None:
+        return None
+    try:
+        batch_size = images.shape[0]
+    except Exception:
+        try:
+            batch_size = len(images)
+        except Exception:
+            return None
+    return f"batch={batch_size}"
+
+
+def _get_cpu_threads() -> int:
+    override = os.getenv("PERFECTFRAMEAI_CPU_THREADS")
+    if override:
+        try:
+            return max(1, int(override))
+        except ValueError:
+            logger.warning("Invalid PERFECTFRAMEAI_CPU_THREADS value: %s", override)
+    cpu_count = os.cpu_count() or 4
+    return min(12, max(1, cpu_count - 2))
+
+
+def _configure_tensorflow_runtime() -> None:
+    """Configure TensorFlow runtime for GPU/CPU without over-allocating resources."""
+    global _TF_RUNTIME_CONFIGURED
+    if _TF_RUNTIME_CONFIGURED or os.getenv("PERFECTFRAMEAI_DISABLE_TF_CONFIG"):
+        return
+    _TF_RUNTIME_CONFIGURED = True
+    try:
+        gpus = tf.config.list_physical_devices("GPU")
+        if gpus:
+            for gpu in gpus:
+                try:
+                    tf.config.experimental.set_memory_growth(gpu, True)
+                except Exception as exc:  # pragma: no cover - defensive path
+                    logger.debug("Failed to set memory growth on %s: %s", gpu, exc)
+            logger.info("TensorFlow GPU detected (%d). Memory growth enabled.", len(gpus))
+            return
+        threads = _get_cpu_threads()
+        tf.config.threading.set_intra_op_parallelism_threads(threads)
+        tf.config.threading.set_inter_op_parallelism_threads(max(1, threads // 2))
+        logger.info("TensorFlow CPU threads set: intra=%d inter=%d", threads, max(1, threads // 2))
+    except Exception as exc:  # pragma: no cover - defensive path
+        logger.warning("TensorFlow runtime configuration failed: %s", exc)
 
 
 class ImageEvaluator(ABC):
@@ -90,8 +147,10 @@ class InceptionResNetNIMA(ImageEvaluator):
         Args:
             config (ExtractorConfig): Configuration object for the image evaluator.
         """
+        _configure_tensorflow_runtime()
         self._model = _ResNetModel.get_model(config)
 
+    @profile_time("compute_aesthetic_score", details_fn=_nima_details)
     def evaluate_images(self, images: np.ndarray) -> list[float]:
         """
         Evaluate a batch of images using the NIMA model, and return the results.

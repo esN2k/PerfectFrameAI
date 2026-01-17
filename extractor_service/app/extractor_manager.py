@@ -18,7 +18,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
+import cProfile
+import io
 import logging
+import os
+import pstats
 
 from fastapi import BackgroundTasks, HTTPException
 
@@ -78,7 +82,17 @@ class ExtractorManager:
         """
         try:
             cls._active_extractor = extractor_name
-            extractor.process()
+            if os.getenv("PERFECTFRAMEAI_PROFILE"):
+                profiler = cProfile.Profile()
+                profiler.enable()
+                extractor.process()
+                profiler.disable()
+                stream = io.StringIO()
+                stats = pstats.Stats(profiler, stream=stream)
+                stats.sort_stats("cumulative").print_stats(30)
+                logger.info("PROFILE RESULTS:\n%s", stream.getvalue())
+            else:
+                extractor.process()
         finally:
             cls._active_extractor = None
 

@@ -15,6 +15,8 @@ RUN apt-get update && apt-get install -y \
     libavutil-dev \
     libswscale-dev \
     libavfilter-dev \
+    libgl1 \
+    libglib2.0-0 \
     pkg-config && \
     rm -rf /var/lib/apt/lists/*
 
@@ -24,12 +26,23 @@ WORKDIR /app
 
 COPY requirements.txt .
 
+RUN pip install --no-cache-dir torch==2.3.1 torchvision==0.18.1 \
+    --index-url https://download.pytorch.org/whl/cu121
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-ENV NVIDIA_VISIBLE_DEVICES all
-ENV NVIDIA_DRIVER_CAPABILITIES compute,video,utility
-ENV TF_CPP_MIN_LOG_LEVEL 3
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
+ENV CUDA_HOME=/usr/local/cuda
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:${LD_LIBRARY_PATH}
+ENV TF_CPP_MIN_LOG_LEVEL=3
+ENV TF_FORCE_GPU_ALLOW_GROWTH=true
+ENV TF_GPU_ALLOCATOR=cuda_malloc_async
 ENV DOCKER_ENV=1
+ENV PERFECTFRAMEAI_BATCH_SIZE=64
+ENV PERFECTFRAMEAI_PREFETCH_BATCHES=1
+ENV PERFECTFRAMEAI_LOG_PERF=1
+ENV PERFECTFRAMEAI_LOG_GPU=1
 
 COPY . .
 

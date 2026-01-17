@@ -23,8 +23,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 import logging
+import os
 import subprocess
 import sys
+from shutil import which
 from typing import Optional
 
 logger = logging.getLogger(__name__)
@@ -56,6 +58,7 @@ class DockerManager:
         self._port = port
         self._force_build = force_build
         self._cpu_only = cpu_only
+        self._docker_bin = self._resolve_docker_binary()
         self.__log_input()
 
     @property
@@ -77,6 +80,68 @@ class DockerManager:
         logger.debug("Port from user: %s", self._port)
         logger.debug("Force build: %s", self._force_build)
         logger.debug("CPU only: %s", self._cpu_only)
+        logger.debug("Docker binary: %s", self._docker_bin)
+
+    @staticmethod
+    def _is_wsl() -> bool:
+        """Return True when running inside WSL."""
+        if os.getenv("WSL_DISTRO_NAME"):
+            return True
+        try:
+            with open("/proc/version", "r", encoding="utf-8") as version_file:
+                return "microsoft" in version_file.read().lower()
+        except OSError:
+            return False
+
+    @classmethod
+    def _resolve_docker_binary(cls) -> str:
+        """Find a usable docker CLI in WSL/Windows environments."""
+        override = os.getenv("PERFECTFRAMEAI_DOCKER_BIN")
+        if override:
+            return override
+
+        docker_path = which("docker")
+        docker_exe_path = which("docker.exe")
+        windows_docker = "/mnt/c/Program Files/Docker/Docker/resources/bin/docker.exe"
+
+        if cls._is_wsl():
+            if docker_exe_path:
+                return docker_exe_path
+            if os.path.exists(windows_docker):
+                return windows_docker
+            if docker_path:
+                return docker_path
+        else:
+            if docker_path:
+                return docker_path
+            if docker_exe_path:
+                return docker_exe_path
+            if os.path.exists(windows_docker):
+                return windows_docker
+
+        raise FileNotFoundError(
+            "Docker CLI not found. Ensure Docker Desktop is installed and WSL integration is enabled."
+        )
+
+    def _use_windows_paths(self) -> bool:
+        return self._docker_bin.endswith(".exe") and self._is_wsl()
+
+    def _normalize_host_path(self, path: str) -> str:
+        """Convert WSL paths to Windows paths when calling docker.exe."""
+        if not self._use_windows_paths():
+            return path
+        try:
+            result = subprocess.run(
+                ["wslpath", "-w", path],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            converted = result.stdout.strip()
+            return converted or path
+        except Exception as exc:  # pragma: no cover - defensive path
+            logger.warning("Failed to convert path '%s' for Docker CLI: %s", path, exc)
+            return path
 
     @property
     def docker_image_existence(self) -> bool:
@@ -98,7 +163,7 @@ class DockerManager:
         Returns:
             bool: True if the image exists, False otherwise.
         """
-        command = ["docker", "images", "-q", self._image_name]
+        command = [self._docker_bin, "images", "-q", self._image_name]
         process_output = subprocess.run(command, capture_output=True,
                                         text=True, check=True).stdout.strip()
         is_exists = process_output != ""
@@ -113,7 +178,8 @@ class DockerManager:
         """
         if not self.docker_image_existence or self._force_build:
             logging.info("Building Docker image...")
-            command = ["docker", "build", "-t", self._image_name, dockerfile_path]
+            dockerfile_path = self._normalize_host_path(dockerfile_path)
+            command = [self._docker_bin, "build", "-t", self._image_name, dockerfile_path]
             subprocess.run(command, check=True)
         else:
             logger.info("Image is already created. Using existing one.")
@@ -135,7 +201,7 @@ class DockerManager:
         Returns:
             str: The status of the container.
         """
-        command = ["docker", "inspect", "--format='{{.State.Status}}'", self._container_name]
+        command = [self._docker_bin, "inspect", "--format='{{.State.Status}}'", self._container_name]
         result = subprocess.run(command, capture_output=True, text=True, check=False)
         if result.returncode == 0:
             return result.stdout.strip().replace("'", "")
@@ -173,7 +239,7 @@ class DockerManager:
     def _start_container(self) -> None:
         """Start the container if it exists but stopped."""
         logging.info("Starting the existing container...")
-        command = ["docker", "start", self._container_name]
+        command = [self._docker_bin, "start", self._container_name]
         subprocess.run(command, check=True)
 
     def _run_container(self, container_port: int, container_input_directory: str,
@@ -187,13 +253,18 @@ class DockerManager:
             container_output_directory (str): Directory inside the container for output data.
         """
         logging.info("Running a new container...")
+        input_dir = self._normalize_host_path(self._input_directory)
+        output_dir = self._normalize_host_path(self._output_directory)
         command = [
-            "docker", "run", "--name", self._container_name,
+            self._docker_bin, "run", "--name", self._container_name,
             "--restart", "unless-stopped", "-d",
             "-p", f"{self._port}:{container_port}",
-            "-v", f"{self._input_directory}:{container_input_directory}",
-            "-v", f"{self._output_directory}:{container_output_directory}"
+            "-v", f"{input_dir}:{container_input_directory}",
+            "-v", f"{output_dir}:{container_output_directory}"
         ]
+        for key, value in os.environ.items():
+            if key.startswith("PERFECTFRAMEAI_"):
+                command.extend(["-e", f"{key}={value}"])
         if not self._cpu_only:
             command.extend(["--gpus", "all"])
         command.append(self._image_name)
@@ -221,7 +292,7 @@ class DockerManager:
             subprocess.Popen: The process object for the log following command.
         """
         logger.info("Following logs for %s...", self._container_name)
-        command = ["docker", "logs", "-f", "--since", "1s", self._container_name]
+        command = [self._docker_bin, "logs", "-f", "--since", "1s", self._container_name]
         process = subprocess.Popen(
             command, stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT, text=True, encoding="utf-8"
@@ -242,13 +313,13 @@ class DockerManager:
     def _stop_container(self) -> None:
         """Stops the running Docker container."""
         logger.info("Stopping container %s...", self._container_name)
-        command = ["docker", "stop", self._container_name]
+        command = [self._docker_bin, "stop", self._container_name]
         subprocess.run(command, check=True, capture_output=True)
         logger.info("Container stopped.")
 
     def _delete_container(self) -> None:
         """Deletes the Docker container."""
         logger.info("Deleting container %s...", self._container_name)
-        command = ["docker", "rm", self._container_name]
+        command = [self._docker_bin, "rm", self._container_name]
         subprocess.run(command, check=True, capture_output=True)
         logger.info("Container deleted.")

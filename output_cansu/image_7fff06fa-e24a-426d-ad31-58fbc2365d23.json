@@ -1,0 +1,12 @@
+{
+  "frame_id": "frame_0017",
+  "timestamp": 17.0,
+  "aesthetic_score": 0.085,
+  "face_quality_score": 0.0,
+  "blur_score": 13.011,
+  "composite_score": 0.237,
+  "faces_detected": 0,
+  "face_bounding_boxes": [],
+  "pose_category": "unknown",
+  "is_blurry": true
+}

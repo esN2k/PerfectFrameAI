@@ -1,0 +1,108 @@
+{
+  "totals": {
+    "extract_frames": 0.052713075000156095,
+    "compute_aesthetic_score": 19.70579661900001,
+    "detect_faces": 2.9889575350002815,
+    "calculate_blur_score": 0.027401869000186707,
+    "face_detection": 3.0177050929996767,
+    "video_total": 23.42166290899968
+  },
+  "videos": {
+    "edge_no_faces.mp4": {
+      "extract_frames": 0.052713075000156095,
+      "compute_aesthetic_score": 19.70579661900001,
+      "detect_faces": 2.9889575350002815,
+      "calculate_blur_score": 0.027401869000186707,
+      "face_detection": 3.0177050929996767,
+      "video_total": 23.42166290899968
+    }
+  },
+  "records": [
+    {
+      "label": "extract_frames",
+      "duration": 0.052713075000156095,
+      "details": "video=edge_no_faces.mp4",
+      "context": {},
+      "timestamp": 1769186190.0338638
+    },
+    {
+      "label": "compute_aesthetic_score",
+      "duration": 19.70579661900001,
+      "details": "batch=3",
+      "context": {
+        "video": "edge_no_faces.mp4"
+      },
+      "timestamp": 1769186212.4647312
+    },
+    {
+      "label": "detect_faces",
+      "duration": 2.9264255680000133,
+      "details": null,
+      "context": {
+        "video": "edge_no_faces.mp4"
+      },
+      "timestamp": 1769186215.3992765
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.02114926900003411,
+      "details": null,
+      "context": {
+        "video": "edge_no_faces.mp4"
+      },
+      "timestamp": 1769186215.4365227
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.03724859200019637,
+      "details": null,
+      "context": {
+        "video": "edge_no_faces.mp4"
+      },
+      "timestamp": 1769186215.4797795
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.002947920000224258,
+      "details": null,
+      "context": {
+        "video": "edge_no_faces.mp4"
+      },
+      "timestamp": 1769186215.4899473
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.025283375000071828,
+      "details": null,
+      "context": {
+        "video": "edge_no_faces.mp4"
+      },
+      "timestamp": 1769186215.5207539
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0033046799999283394,
+      "details": null,
+      "context": {
+        "video": "edge_no_faces.mp4"
+      },
+      "timestamp": 1769186215.5293274
+    },
+    {
+      "label": "face_detection",
+      "duration": 3.0177050929996767,
+      "details": "frames=3",
+      "context": {
+        "video": "edge_no_faces.mp4"
+      },
+      "timestamp": 1769186215.5341744
+    },
+    {
+      "label": "video_total",
+      "duration": 23.42166290899968,
+      "details": "video=edge_no_faces.mp4",
+      "context": {},
+      "timestamp": 1769186216.0692682
+    }
+  ]
+}

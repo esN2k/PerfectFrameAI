@@ -24,6 +24,7 @@ import time
 from http.client import RemoteDisconnected
 from pathlib import Path
 from typing import Union
+from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 logger = logging.getLogger(__name__)
@@ -115,7 +116,7 @@ class ServiceInitializer:
                     message = response_body.get("message", "No message returned")
                     logger.info("Response from server: %s", message)
                     return True
-        except (RemoteDisconnected, ConnectionResetError, ConnectionRefusedError):
+        except (RemoteDisconnected, ConnectionResetError, ConnectionRefusedError, URLError):
             logger.info("Waiting for service to be available...")
             self.__check_timeout(start_time, timeout)
             time.sleep(3)

@@ -5,8 +5,12 @@ from __future__ import annotations
 
 import logging
 import os
+import shutil
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List, Tuple
+from urllib.parse import urlparse
+from urllib.request import urlopen
 
 import cv2
 import numpy as np
@@ -35,6 +39,11 @@ _WARNED_NO_CASCADE = False
 _YOLO_MODEL_NAME = os.getenv("PERFECTFRAMEAI_YOLO_MODEL", "yolov8n-face.pt")
 _YOLO_CONFIDENCE = float(os.getenv("PERFECTFRAMEAI_YOLO_CONFIDENCE", "0.25"))
 _YOLO_IMAGE_SIZE = int(os.getenv("PERFECTFRAMEAI_YOLO_IMAGE_SIZE", "640"))
+_YOLO_MODEL_URL = os.getenv(
+    "PERFECTFRAMEAI_YOLO_MODEL_URL",
+    "https://github.com/lindevs/yolov8-face/releases/latest/download/yolov8n-face-lindevs.pt",
+)
+_YOLO_CACHE_DIR = os.getenv("PERFECTFRAMEAI_YOLO_CACHE", "~/.cache/ultralytics")
 
 # Normalization constants for scoring.
 _FACE_SIZE_NORMALIZATION = 0.2
@@ -74,18 +83,60 @@ def _get_yolo_device() -> str:
     return _YOLO_DEVICE
 
 
+def _is_url(value: str) -> bool:
+    return value.startswith("http://") or value.startswith("https://")
+
+
+def _download_to_cache(url: str, filename: str | None = None) -> str | None:
+    if not url:
+        return None
+    parsed = urlparse(url)
+    name = filename or os.path.basename(parsed.path)
+    if not name:
+        return None
+    cache_dir = Path(_YOLO_CACHE_DIR).expanduser()
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    destination = cache_dir / name
+    if destination.exists():
+        return str(destination)
+    try:
+        logger.info("Downloading YOLO face model from %s", url)
+        with urlopen(url) as response, destination.open("wb") as handle:
+            shutil.copyfileobj(response, handle)
+        return str(destination)
+    except Exception as exc:  # pragma: no cover - download failure path
+        logger.warning("Failed to download YOLO model from %s: %s", url, exc)
+        return None
+
+
+def _resolve_yolo_model_path() -> str | None:
+    model_name = _YOLO_MODEL_NAME
+    if _is_url(model_name):
+        return _download_to_cache(model_name)
+    if os.path.exists(model_name):
+        return model_name
+    if _YOLO_MODEL_URL:
+        return _download_to_cache(_YOLO_MODEL_URL, filename=model_name)
+    return model_name
+
+
 def _get_yolo_model():
     """Return a cached YOLO face detector instance, if available."""
-    global _YOLO_MODEL
+    global _YOLO_MODEL, _WARNED_YOLO_FAILED
     if YOLO is None:
         return None
     if os.getenv("PERFECTFRAMEAI_FORCE_HAAR"):
         return None
+    if _WARNED_YOLO_FAILED:
+        return None
     if _YOLO_MODEL is None:
         try:
-            _YOLO_MODEL = YOLO(_YOLO_MODEL_NAME)
+            model_path = _resolve_yolo_model_path()
+            if not model_path:
+                _WARNED_YOLO_FAILED = True
+                return None
+            _YOLO_MODEL = YOLO(model_path)
         except Exception as exc:  # pragma: no cover - defensive path
-            global _WARNED_YOLO_FAILED
             if not _WARNED_YOLO_FAILED:
                 logger.warning("YOLO model load failed: %s", exc)
                 _WARNED_YOLO_FAILED = True

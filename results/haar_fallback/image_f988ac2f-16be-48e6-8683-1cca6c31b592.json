@@ -1,0 +1,19 @@
+{
+  "frame_id": "frame_0001",
+  "timestamp": 1.0,
+  "aesthetic_score": 4.91,
+  "face_quality_score": 6.978,
+  "blur_score": 9.167,
+  "composite_score": 5.035,
+  "faces_detected": 1,
+  "face_bounding_boxes": [
+    [
+      81,
+      206,
+      308,
+      308
+    ]
+  ],
+  "pose_category": "portrait",
+  "is_blurry": true
+}

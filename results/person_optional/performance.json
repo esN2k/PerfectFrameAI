@@ -1,0 +1,666 @@
+{
+  "totals": {
+    "extract_frames": 0.4449423040000511,
+    "compute_aesthetic_score": 19.001066839000032,
+    "detect_faces": 3.4814139940008317,
+    "calculate_blur_score": 0.08911408100084373,
+    "face_detection": 3.5935596970016377,
+    "video_total": 23.88712603299973
+  },
+  "videos": {
+    "Cansu.mp4": {
+      "extract_frames": 0.4449423040000511,
+      "compute_aesthetic_score": 19.001066839000032,
+      "detect_faces": 3.4814139940008317,
+      "calculate_blur_score": 0.08911408100084373,
+      "face_detection": 3.5935596970016377,
+      "video_total": 23.88712603299973
+    }
+  },
+  "records": [
+    {
+      "label": "extract_frames",
+      "duration": 0.4449423040000511,
+      "details": "video=Cansu.mp4",
+      "context": {},
+      "timestamp": 1769185974.749775
+    },
+    {
+      "label": "compute_aesthetic_score",
+      "duration": 19.001066839000032,
+      "details": "batch=23",
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185993.8236816
+    },
+    {
+      "label": "detect_faces",
+      "duration": 2.997152095000274,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185996.8258634
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.008430311000211077,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185996.8378398
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0011571899999580637,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185996.8427074
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.019124978000036208,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185996.8656228
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.005133454999850073,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185996.8745258
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0012215550000291842,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185996.8795953
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.01799229700009164,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185996.9013703
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.00260201400033111,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185996.9076912
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0012876640003014472,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185996.9126196
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.03830071499987753,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185996.9547827
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0020154459998593666,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185996.9609182
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.041650211999694875,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.006787
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.002909660000113945,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.0225215
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.001357337000172265,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.029528
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.029879868000080023,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.0635521
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0019802700003310747,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.069805
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0012588529998538434,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.0750623
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.0171832840001116,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.0962644
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.00267569600009665,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.10405
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0011263219998909335,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.1091487
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.01729746000000887,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.1310635
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0021307379997779208,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.137288
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0013538099997276731,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.1425748
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.01743182700010948,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.1643295
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0018541400004323805,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.170366
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0014099360000727756,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.1757143
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.02378991700015831,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.2032878
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0020951760002390074,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.209912
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0012828330000047572,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.2153566
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.01686569999992571,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.2362866
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0021536079998440982,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.2428505
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.001490060999913112,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.248869
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.01774232599973402,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.271476
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0022847150003144634,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.2781122
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.001536736000161909,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.2838628
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.018206176000148844,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.3062038
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.00213239100003193,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.312977
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0012195899998914683,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.3188462
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.04046088700033579,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.3637798
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.001858953000009933,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.370274
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0010679820002224005,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.3759263
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.016738012999667262,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.397149
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.002321755999673769,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.4038367
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0011404470001252776,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.4093828
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.01771735800002716,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.431426
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0020809769998777483,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.4379714
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.00108824300014021,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.4434302
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.018026308000116842,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.4656126
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.002775246000055631,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.473533
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0015811430002941051,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.4805708
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.022934505000193894,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.5089402
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.002386525000019901,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.5172672
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0014375999999174383,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.523454
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.017635736000102042,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.545505
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.001924281999890809,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.5517895
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.001093551999929332,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.5572846
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.02163503799965838,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.5921662
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0019574009997995745,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.5989828
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0011488420000205224,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.6053524
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.018256014000144205,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.6283786
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0022697989998050616,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.635369
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0011308950001875928,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.6410983
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.01796105700032058,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.6638017
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.002999354999701609,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.6718905
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.001445966999654047,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.6779902
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.017432223000014346,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.699915
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0019022020001102646,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.7070584
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0014034069999979693,
+      "details": null,
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.7136521
+    },
+    {
+      "label": "face_detection",
+      "duration": 3.5935596970016377,
+      "details": "frames=23",
+      "context": {
+        "video": "Cansu.mp4"
+      },
+      "timestamp": 1769185997.718869
+    },
+    {
+      "label": "video_total",
+      "duration": 23.88712603299973,
+      "details": "video=Cansu.mp4",
+      "context": {},
+      "timestamp": 1769185998.1363027
+    }
+  ]
+}

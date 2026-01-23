@@ -186,9 +186,9 @@ class InceptionResNetNIMA(ImageEvaluator):
             float: Weighted mean of the prediction.
         """
         if weights is None:
-            weights = np.ones_like(prediction)  # Default weights, equally distribute importance
-        weighted_mean = np.sum(prediction * weights) / np.sum(weights)
-        return weighted_mean
+            weights = np.arange(1, prediction.shape[-1] + 1)
+        weighted_mean = np.sum(prediction * weights)
+        return float(weighted_mean)
 
 
 class _NIMAModel(ABC):

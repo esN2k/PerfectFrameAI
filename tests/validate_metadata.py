@@ -39,9 +39,13 @@ def _find_image_for_metadata(metadata_path: Path) -> Path | None:
 def _iter_metadata_paths(paths: Iterable[Path]) -> Iterable[Path]:
     for root in paths:
         if root.is_file() and root.suffix == ".json":
-            yield root
+            if _find_image_for_metadata(root):
+                yield root
+            continue
         if root.is_dir():
-            yield from root.rglob("*.json")
+            for candidate in root.rglob("*.json"):
+                if _find_image_for_metadata(candidate):
+                    yield candidate
 
 
 def _validate_entry(entry: dict, metadata_path: Path,

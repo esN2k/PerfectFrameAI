@@ -22,6 +22,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
+import json
 import logging
 import os
 import subprocess
@@ -143,6 +144,53 @@ class DockerManager:
             logger.warning("Failed to convert path '%s' for Docker CLI: %s", path, exc)
             return path
 
+    def _normalize_compare_path(self, path: str) -> str:
+        if self._use_windows_paths():
+            return path.replace("\\", "/").lower()
+        return os.path.normpath(path)
+
+    def _get_container_mounts(self) -> dict[str, str]:
+        command = [
+            self._docker_bin,
+            "inspect",
+            "--format={{json .Mounts}}",
+            self._container_name,
+        ]
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
+        if result.returncode != 0:
+            return {}
+        raw = result.stdout.strip()
+        if not raw:
+            return {}
+        try:
+            mounts = json.loads(raw)
+        except json.JSONDecodeError:
+            logger.warning("Failed to parse mounts for container %s.", self._container_name)
+            return {}
+        return {
+            mount.get("Destination"): mount.get("Source")
+            for mount in mounts
+            if isinstance(mount, dict)
+        }
+
+    def _mounts_match(self, container_input_directory: str,
+                      container_output_directory: str) -> bool:
+        mounts = self._get_container_mounts()
+        input_source = mounts.get(container_input_directory)
+        output_source = mounts.get(container_output_directory)
+        if not input_source or not output_source:
+            return False
+        expected_input = self._normalize_compare_path(
+            self._normalize_host_path(self._input_directory)
+        )
+        expected_output = self._normalize_compare_path(
+            self._normalize_host_path(self._output_directory)
+        )
+        return (
+            self._normalize_compare_path(input_source) == expected_input
+            and self._normalize_compare_path(output_source) == expected_output
+        )
+
     @property
     def docker_image_existence(self) -> bool:
         """
@@ -228,10 +276,18 @@ class DockerManager:
             self._delete_container()
             self._run_container(container_port, container_input_directory,
                                 container_output_directory)
-        elif status in ["exited", "created"]:
-            self._start_container()
-        elif status == "running":
-            logging.info("Container is already running.")
+        elif status in ["running", "paused", "exited", "created"]:
+            if not self._mounts_match(container_input_directory, container_output_directory):
+                logging.info("Container mounts differ from requested paths. Recreating container.")
+                if status in ["running", "paused"]:
+                    self._stop_container()
+                self._delete_container()
+                self._run_container(container_port, container_input_directory,
+                                    container_output_directory)
+            elif status in ["exited", "created"]:
+                self._start_container()
+            elif status == "running":
+                logging.info("Container is already running.")
         else:
             logging.warning("Container in unsupported status: %s. Fix container on your own.",
                             status)

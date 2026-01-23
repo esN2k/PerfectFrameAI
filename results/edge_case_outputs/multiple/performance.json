@@ -1,0 +1,135 @@
+{
+  "totals": {
+    "extract_frames": 0.1391190739996091,
+    "compute_aesthetic_score": 20.007300149000002,
+    "detect_faces": 2.8312883439998586,
+    "calculate_blur_score": 0.06175692100032393,
+    "face_detection": 2.8545912849999695,
+    "video_total": 23.732966771000065
+  },
+  "videos": {
+    "edge_multiple.mp4": {
+      "extract_frames": 0.1391190739996091,
+      "compute_aesthetic_score": 20.007300149000002,
+      "detect_faces": 2.8312883439998586,
+      "calculate_blur_score": 0.06175692100032393,
+      "face_detection": 2.8545912849999695,
+      "video_total": 23.732966771000065
+    }
+  },
+  "records": [
+    {
+      "label": "extract_frames",
+      "duration": 0.1391190739996091,
+      "details": "video=edge_multiple.mp4",
+      "context": {},
+      "timestamp": 1769186317.0586066
+    },
+    {
+      "label": "compute_aesthetic_score",
+      "duration": 20.007300149000002,
+      "details": "batch=3",
+      "context": {
+        "video": "edge_multiple.mp4"
+      },
+      "timestamp": 1769186339.839935
+    },
+    {
+      "label": "detect_faces",
+      "duration": 2.7395310679999056,
+      "details": null,
+      "context": {
+        "video": "edge_multiple.mp4"
+      },
+      "timestamp": 1769186342.584494
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.029541213999891625,
+      "details": null,
+      "context": {
+        "video": "edge_multiple.mp4"
+      },
+      "timestamp": 1769186342.6202958
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.004223667000132991,
+      "details": null,
+      "context": {
+        "video": "edge_multiple.mp4"
+      },
+      "timestamp": 1769186342.631724
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.05182327400007125,
+      "details": null,
+      "context": {
+        "video": "edge_multiple.mp4"
+      },
+      "timestamp": 1769186342.691247
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.01883882900028766,
+      "details": null,
+      "context": {
+        "video": "edge_multiple.mp4"
+      },
+      "timestamp": 1769186342.7181747
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0017594500000086555,
+      "details": null,
+      "context": {
+        "video": "edge_multiple.mp4"
+      },
+      "timestamp": 1769186342.7375083
+    },
+    {
+      "label": "detect_faces",
+      "duration": 0.03993400199988173,
+      "details": null,
+      "context": {
+        "video": "edge_multiple.mp4"
+      },
+      "timestamp": 1769186342.7860136
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.005784574000244902,
+      "details": null,
+      "context": {
+        "video": "edge_multiple.mp4"
+      },
+      "timestamp": 1769186342.8004346
+    },
+    {
+      "label": "calculate_blur_score",
+      "duration": 0.0016091869997580943,
+      "details": null,
+      "context": {
+        "video": "edge_multiple.mp4"
+      },
+      "timestamp": 1769186342.809795
+    },
+    {
+      "label": "face_detection",
+      "duration": 2.8545912849999695,
+      "details": "frames=3",
+      "context": {
+        "video": "edge_multiple.mp4"
+      },
+      "timestamp": 1769186342.8164303
+    },
+    {
+      "label": "video_total",
+      "duration": 23.732966771000065,
+      "details": "video=edge_multiple.mp4",
+      "context": {},
+      "timestamp": 1769186343.3586733
+    }
+  ]
+}
